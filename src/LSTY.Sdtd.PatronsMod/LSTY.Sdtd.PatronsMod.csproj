@@ -12,6 +12,7 @@
 	<ItemGroup>
 		<Using Remove="System.Net.Http" />
 		<ProjectReference Include="..\LSTY.Sdtd.Shared\LSTY.Sdtd.Shared.csproj" />
+		<None Include="..\..\README.md" />
 	</ItemGroup>
 
 	<ItemGroup>
