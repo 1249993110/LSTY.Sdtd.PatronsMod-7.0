@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xml>
+	<ModInfo>
+		<Name value="LSTY.Sdtd.PatronsMod-6.0" />
+		<Description value="API Mod for 7DaysToDie Dedicated Servers." />
+		<Author value="IceCoffee" />
+		<Version value="6.0.0" />
+		<Website value="https://7daystodie.top" />
+	</ModInfo>
+</xml>

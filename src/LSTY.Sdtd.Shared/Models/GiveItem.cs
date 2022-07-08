@@ -1,0 +1,33 @@
+﻿namespace LSTY.Sdtd.Shared.Models
+{
+    /// <summary>
+    /// 给与项目
+    /// </summary>
+    public class GiveItem
+    {
+        /// <summary>
+        /// 数量
+        /// </summary>
+        public int? Count { get; set; }
+
+        /// <summary>
+        /// 耐久度百分比
+        /// </summary>
+        public int? Durability { get; set; }
+
+        /// <summary>
+        /// 项目名称
+        /// </summary>
+        public string ItemName { get; set; }
+
+        /// <summary>
+        /// 质量
+        /// </summary>
+        public int? Quality { get; set; }
+
+        /// <summary>
+        /// 目标玩家的Id或昵称
+        /// </summary>
+        public string TargetPlayerIdOrName { get; set; }
+    }
+}

@@ -1,0 +1,142 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<PlatformTarget>x64</PlatformTarget>
+		<TargetFramework>net461</TargetFramework>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<LangVersion>10.0</LangVersion>
+		<Version>7.0.0.0</Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Using Remove="System.Net.Http" />
+		<ProjectReference Include="..\LSTY.Sdtd.Shared\LSTY.Sdtd.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Lib.Harmony" Version="2.2.1" />
+		<PackageReference Include="Microsoft.AspNet.SignalR.SelfHost" Version="2.4.3" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="Assembly-CSharp">
+			<Private>false</Private>
+			<HintPath>..\7dtd-binaries\Assembly-CSharp.dll</HintPath>
+		</Reference>
+		<Reference Include="Assembly-CSharp-firstpass">
+			<Private>false</Private>
+			<HintPath>..\7dtd-binaries\Assembly-CSharp-firstpass.dll</HintPath>
+		</Reference>
+		<Reference Include="LogLibrary">
+			<Private>false</Private>
+			<HintPath>..\7dtd-binaries\LogLibrary.dll</HintPath>
+		</Reference>
+		<Reference Include="mscorlib">
+			<Private>false</Private>
+			<HintPath>..\7dtd-binaries\mscorlib.dll</HintPath>
+		</Reference>
+		<Reference Include="System">
+			<Private>false</Private>
+			<HintPath>..\7dtd-binaries\System.dll</HintPath>
+		</Reference>
+		<Reference Include="System.Xml">
+			<Private>false</Private>
+			<HintPath>..\7dtd-binaries\System.Xml.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine">
+			<Private>false</Private>
+			<HintPath>..\7dtd-binaries\UnityEngine.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<Private>false</Private>
+			<HintPath>..\7dtd-binaries\UnityEngine.CoreModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.ImageConversionModule">
+			<Private>false</Private>
+			<HintPath>..\7dtd-binaries\UnityEngine.ImageConversionModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.PhysicsModule">
+			<Private>false</Private>
+			<HintPath>..\7dtd-binaries\UnityEngine.PhysicsModule.dll</HintPath>
+		</Reference>
+		<Reference Include="AstarPathfindingProject">
+			<Private>false</Private>
+			<HintPath>..\7dtd-binaries\AstarPathfindingProject.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="Microsoft.CSharp">
+			<Private>true</Private>
+			<HintPath>$(SystemRoot)\Microsoft.NET\Framework64\v$(MSBuildRuntimeVersion)\Microsoft.CSharp.dll</HintPath>
+		</Reference>
+		<Reference Include="System.Dynamic">
+			<Private>true</Private>
+			<HintPath>$(SystemRoot)\Microsoft.NET\Framework64\v$(MSBuildRuntimeVersion)\System.Dynamic.dll</HintPath>
+		</Reference>
+		<Reference Include="System.ServiceModel.Internals">
+			<Private>true</Private>
+			<HintPath>$(SystemRoot)\Microsoft.NET\Framework64\v$(MSBuildRuntimeVersion)\System.ServiceModel.Internals.dll</HintPath>
+		</Reference>
+		<Reference Include="SMDiagnostics">
+			<Private>true</Private>
+			<HintPath>$(SystemRoot)\Microsoft.NET\Framework64\v$(MSBuildRuntimeVersion)\SMDiagnostics.dll</HintPath>
+		</Reference>
+		<!-- System.Net.Http is unavailable in Mono, detail see https://github.com/dotnet/runtime/issues/21777 -->
+		<!--<Reference Include="System.Net.Http">
+		  <Private>true</Private>
+		  <HintPath>$(SystemRoot)\Microsoft.NET\Framework64\v$(MSBuildRuntimeVersion)\System.Net.Http.dll</HintPath>
+	  </Reference>-->
+		<Reference Include="System.Runtime">
+			<Private>true</Private>
+			<HintPath>$(SystemRoot)\Microsoft.NET\Framework64\v$(MSBuildRuntimeVersion)\System.Runtime.dll</HintPath>
+		</Reference>
+		<Reference Include="System.Runtime.Serialization">
+			<Private>true</Private>
+			<HintPath>$(SystemRoot)\Microsoft.NET\Framework64\v$(MSBuildRuntimeVersion)\System.Runtime.Serialization.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="Allocs\7dtd-server-fixes.dll">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Allocs\MapRendering.dll">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="ModInfo.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="README.md">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="restart-windows.bat">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="restart-linux.sh">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Allocs\server-fixes license.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<!--<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<OutputPath>D:\Program Files (x86)\Steam\steamapps\common\7 Days to Die Dedicated Server\Mods\LSTY.Sdtd.PatronsMod-7.0</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<OutputPath>bin\Release\Mods\LSTY.Sdtd.PatronsMod-7.0</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	</PropertyGroup>-->
+
+	<!--<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<PostBuildEvent>
+			cd /D "D:\Program Files (x86)\Steam\steamapps\common\7 Days to Die Dedicated Server"
+			powershell start-process -FilePath startdedicated.bat
+		</PostBuildEvent>
+	</PropertyGroup>-->
+</Project>
