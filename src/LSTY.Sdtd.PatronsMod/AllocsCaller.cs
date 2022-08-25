@@ -1,6 +1,4 @@
-﻿using HarmonyLib;
-using LSTY.Sdtd.PatronsMod.HarmonyPatchers;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace LSTY.Sdtd.PatronsMod
 {
@@ -41,7 +39,7 @@ namespace LSTY.Sdtd.PatronsMod
 
                 var mapTileCacheIns = mapRenderingType.GetMethod("GetTileCache").Invoke(mapRenderingIns, null);
                 var mapTileCacheType = serverFixesAssembly.GetType("AllocsFixes.FileCache.MapTileCache");
-                _getMapTileDelegate = (Func<string, byte[]>)mapTileCacheType.GetMethod("GetFileContent").CreateDelegate(typeof(Func<string,byte[]>), mapTileCacheIns);
+                _getMapTileDelegate = (Func<string, byte[]>)mapTileCacheType.GetMethod("GetFileContent").CreateDelegate(typeof(Func<string, byte[]>), mapTileCacheIns);
 
                 CustomLogger.Info("Successfully initialize AllocsCallerd, map directory: " + _mapDirectory);
             }

@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using LSTY.Sdtd.PatronsMod;
 using LSTY.Sdtd.PatronsMod.SignalR;
 using Microsoft.Owin.Hosting;
 
@@ -9,17 +8,16 @@ namespace LSTY.Sdtd.PatronsMod
     {
         internal const string ModIdentity = "LSTY.Sdtd.PatronsMod";
 
-        private static Mod _modInstance;
         private static Harmony _harmony;
         private static bool _isGameStartDone;
+        private static Mod _modInstance;
         private static IDisposable _webApp;
 
+        public static Harmony Harmony => _harmony;
+        public static bool IsGameStartDone => _isGameStartDone;
         public static SynchronizationContext MainThreadSyncContext { get; private set; }
 
         public static string ModDirectory => _modInstance.Path;
-        public static Harmony Harmony => _harmony;
-        public static bool IsGameStartDone => _isGameStartDone;
-
         public void InitMod(Mod modInstance)
         {
             try
@@ -39,21 +37,6 @@ namespace LSTY.Sdtd.PatronsMod
             catch (Exception ex)
             {
                 CustomLogger.Error(ex, "Initialize mod " + ModIdentity + " failed");
-            }
-        }
-
-        private static void StartupSignalR()
-        {
-            try
-            {
-                string url = AppSettings.SignalRUrl;
-                _webApp = WebApp.Start<SignalRStartup>(url);
-                CustomLogger.Info("SignalR Server running on " + url);
-            }
-            catch (Exception ex)
-            {
-                CustomLogger.Error(ex, "Startup signalR server failed");
-                throw;
             }
         }
 
@@ -79,12 +62,12 @@ namespace LSTY.Sdtd.PatronsMod
             {
                 Log.LogCallbacks += ModEventHook.LogCallback;
                 ModEvents.GameAwake.RegisterHandler(ModEventHook.GameAwake);
-                ModEvents.GameStartDone.RegisterHandler(() => 
+                ModEvents.GameStartDone.RegisterHandler(() =>
                 {
                     _isGameStartDone = true;
                     ModEventHook.GameStartDone();
                 });
-                ModEvents.GameShutdown.RegisterHandler(() => 
+                ModEvents.GameShutdown.RegisterHandler(() =>
                 {
                     ModEventHook.GameShutdown();
                     AllocsCaller.GameShutdown();
@@ -103,6 +86,21 @@ namespace LSTY.Sdtd.PatronsMod
             catch (Exception ex)
             {
                 CustomLogger.Error(ex, "Register mod event handlers failed");
+                throw;
+            }
+        }
+
+        private static void StartupSignalR()
+        {
+            try
+            {
+                string url = AppSettings.SignalRUrl;
+                _webApp = WebApp.Start<SignalRStartup>(url);
+                CustomLogger.Info("SignalR Server running on " + url);
+            }
+            catch (Exception ex)
+            {
+                CustomLogger.Error(ex, "Startup signalR server failed");
                 throw;
             }
         }

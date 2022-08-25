@@ -1,8 +1,4 @@
-﻿using LSTY.Sdtd.PatronsMod;
-using LSTY.Sdtd.Shared;
-using System.Collections.Generic;
-
-namespace LSTY.Sdtd.PatronsMod.Commands
+﻿namespace LSTY.Sdtd.PatronsMod.Commands
 {
     public class SayToPlayer : ConsoleCmdBase
     {

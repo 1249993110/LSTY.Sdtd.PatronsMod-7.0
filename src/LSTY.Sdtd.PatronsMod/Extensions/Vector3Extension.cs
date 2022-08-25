@@ -1,14 +1,8 @@
-﻿using LSTY.Sdtd.Shared.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace LSTY.Sdtd.PatronsMod.Extensions
 {
-    static class Vector3Extension
+    internal static class Vector3Extension
     {
         public static Position ToPosition(this Vector3 v)
         {

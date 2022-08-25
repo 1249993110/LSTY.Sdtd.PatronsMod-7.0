@@ -1,7 +1,5 @@
-﻿using LSTY.Sdtd.PatronsMod;
-using Microsoft.AspNet.SignalR;
+﻿using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
-using Newtonsoft.Json;
 using Owin;
 
 namespace LSTY.Sdtd.PatronsMod.SignalR

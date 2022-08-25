@@ -1,7 +1,5 @@
 ﻿using HarmonyLib;
 using LSTY.Sdtd.PatronsMod.Extensions;
-using LSTY.Sdtd.PatronsMod;
-using LSTY.Sdtd.Shared.Models;
 
 namespace LSTY.Sdtd.PatronsMod.HarmonyPatchers
 {

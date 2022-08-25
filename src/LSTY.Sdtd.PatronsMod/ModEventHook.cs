@@ -1,6 +1,4 @@
 ﻿using LSTY.Sdtd.PatronsMod.Extensions;
-using LSTY.Sdtd.Shared.Hubs;
-using LSTY.Sdtd.Shared.Models;
 using Microsoft.AspNet.SignalR;
 
 namespace LSTY.Sdtd.PatronsMod
@@ -22,80 +20,42 @@ namespace LSTY.Sdtd.PatronsMod
         }
 
         /// <summary>
-        /// Runs when LogCallback has be called
+        /// Runs each time a chunk has it's colors re-calculated. For example this is used to generate the images for allocs game map mod
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="trace"></param>
-        /// <param name="type"></param>
-        public static void LogCallback(string message, string trace, UnityEngine.LogType type)
+        /// <param name="_chunk"></param>
+        public static void CalcChunkColorsDone(Chunk _chunk)
         {
-            var logEntry = new LogEntry()
-            {
-                Message = message,
-                LogLevel = (Shared.Models.LogLevel)type,
-            };
-            Task.Factory.StartNew((state) =>
-            {
-                _hub.OnLogCallback((LogEntry)state);
-            }, logEntry);
         }
 
         /// <summary>
-        /// Runs once when the server is ready for interaction and GameManager.Instance.World is set
-        /// </summary>
-        public static void GameAwake()
-        {
-            Task.Run(_hub.OnGameAwake);
-        }
-
-        /// <summary>
-        /// Runs once when the server is ready for players to join
-        /// </summary>
-        public static void GameStartDone()
-        {
-            Task.Run(_hub.OnGameStartDone);
-        }
-
-        /// <summary>
-        /// Runs once when the server is about to shut down
-        /// </summary>
-        public static void GameShutdown()
-        {
-            Task.Run(_hub.OnGameShutdown);
-        }
-
-        /// <summary>
-        /// Runs when entity spawned
-        /// </summary>
-        /// <param name="entity"></param>
-        public static void EntitySpawned(EntityLocation entity)
-        {
-            Task.Factory.StartNew((state) =>
-            {
-                if (state is EntityAlive entityAlive)
-                {
-                    _hub.OnEntitySpawned(new EntityLocation()
-                    {
-                        EntityId = entityAlive.entityId,
-                        EntityName = entityAlive.EntityName,
-                        Position = entityAlive.position.ToPosition(),
-                        IsPlayer = entityAlive is EntityPlayer
-                    });
-                }
-            }, entity);
-        }
-
-        /// <summary>
-        /// Runs each time a player spawns, including on login, respawn from death, and teleport
+        /// <para>Return true to pass the message on to the next mod, or if no other mods then it will output to chat. </para>
+        /// <para>Return false to prevent the message from being passed on or output to chat</para>
         /// </summary>
         /// <param name="clientInfo"></param>
-        /// <param name="respawnType"></param>
-        /// <param name="position"></param>
-        public static void PlayerSpawnedInWorld(ClientInfo clientInfo, RespawnType respawnType, Vector3i position)
+        /// <param name="eChatType"></param>
+        /// <param name="senderId"></param>
+        /// <param name="message"></param>
+        /// <param name="mainName"></param>
+        /// <param name="localizeMain"></param>
+        /// <param name="recipientEntityIds"></param>
+        /// <returns></returns>
+        public static bool ChatMessage(ClientInfo clientInfo, EChatType eChatType, int senderId, string message,
+            string mainName, bool localizeMain, List<int> recipientEntityIds)
         {
-            var obj = clientInfo.ToPlayerSpawned(respawnType, position);
+            ChatMessage chatMessage = new ChatMessage()
+            {
+                ChatType = (ChatType)eChatType,
+                EntityId = senderId,
+                Message = message,
+                SenderName = clientInfo?.playerName ?? (localizeMain ? Localization.Get(mainName) : mainName),
+            };
 
-            Task.Factory.StartNew((state) => _hub.OnPlayerSpawnedInWorld((PlayerSpawned)state), obj);
+            Task.Factory.StartNew((state) =>
+            {
+                _hub.OnChatMessage((ChatMessage)state);
+            }, chatMessage);
+
+            return true;
         }
 
         /// <summary>
@@ -147,36 +107,76 @@ namespace LSTY.Sdtd.PatronsMod
         }
 
         /// <summary>
-        /// <para>Return true to pass the message on to the next mod, or if no other mods then it will output to chat. </para>
-        /// <para>Return false to prevent the message from being passed on or output to chat</para>
+        /// Runs when entity spawned
         /// </summary>
-        /// <param name="clientInfo"></param>
-        /// <param name="eChatType"></param>
-        /// <param name="senderId"></param>
-        /// <param name="message"></param>
-        /// <param name="mainName"></param>
-        /// <param name="localizeMain"></param>
-        /// <param name="recipientEntityIds"></param>
-        /// <returns></returns>
-        public static bool ChatMessage(ClientInfo clientInfo, EChatType eChatType, int senderId, string message,
-            string mainName, bool localizeMain, List<int> recipientEntityIds)
+        /// <param name="entity"></param>
+        public static void EntitySpawned(EntityLocation entity)
         {
-            ChatMessage chatMessage = new ChatMessage()
-            {
-                ChatType = (ChatType)eChatType,
-                EntityId = senderId,
-                Message = message,
-                SenderName = clientInfo?.playerName ?? (localizeMain ? Localization.Get(mainName) : mainName),
-            };
-
             Task.Factory.StartNew((state) =>
             {
-                _hub.OnChatMessage((ChatMessage)state);
-            }, chatMessage);
-
-            return true;
+                if (state is EntityAlive entityAlive)
+                {
+                    _hub.OnEntitySpawned(new EntityLocation()
+                    {
+                        EntityId = entityAlive.entityId,
+                        EntityName = entityAlive.EntityName,
+                        Position = entityAlive.position.ToPosition(),
+                        IsPlayer = entityAlive is EntityPlayer
+                    });
+                }
+            }, entity);
         }
 
+        /// <summary>
+        /// Runs once when the server is ready for interaction and GameManager.Instance.World is set
+        /// </summary>
+        public static void GameAwake()
+        {
+            Task.Run(_hub.OnGameAwake);
+        }
+
+        /// <summary>
+        /// Runs once when the server is about to shut down
+        /// </summary>
+        public static void GameShutdown()
+        {
+            Task.Run(_hub.OnGameShutdown);
+        }
+
+        /// <summary>
+        /// Runs once when the server is ready for players to join
+        /// </summary>
+        public static void GameStartDone()
+        {
+            Task.Run(_hub.OnGameStartDone);
+        }
+
+        /// <summary>
+        /// <para>Runs any time the game executes an update (which is very often).</para>
+        /// <para>Place any tasks that you want to process in the main thread here with an execution rate limiter (such as creating entities via the entity factory)</para>
+        /// </summary>
+        public static void GameUpdate()
+        {
+        }
+
+        /// <summary>
+        /// Runs when LogCallback has be called
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="trace"></param>
+        /// <param name="type"></param>
+        public static void LogCallback(string message, string trace, UnityEngine.LogType type)
+        {
+            var logEntry = new LogEntry()
+            {
+                Message = message,
+                LogLevel = (Shared.Models.LogLevel)type,
+            };
+            Task.Factory.StartNew((state) =>
+            {
+                _hub.OnLogCallback((LogEntry)state);
+            }, logEntry);
+        }
         /// <summary>
         /// Runs on each player disconnect
         /// </summary>
@@ -191,19 +191,26 @@ namespace LSTY.Sdtd.PatronsMod
         }
 
         /// <summary>
-        /// <para>runs each time a player file is saved from the client to the server</para>
-        /// <para>this will usually run about every 30 seconds per player as well as triggered updates such as dying</para>
+        /// Runs on initial connection from a player, _cInfo is usually null at this point
         /// </summary>
-        /// <param name="clientInfo"></param>
-        /// <param name="pdf"></param>
-        public static void SavePlayerData(ClientInfo clientInfo, PlayerDataFile pdf)
+        /// <param name="_cInfo"></param>
+        /// <param name="_compatibilityVersion"></param>
+        public static void PlayerLogin(ClientInfo _cInfo, string _compatibilityVersion)
         {
-            Task.Factory.StartNew((state) =>
-            {
-                _hub.OnSavePlayerData(((ClientInfo)state).ToPlayerBase());
-            }, clientInfo);
         }
 
+        /// <summary>
+        /// Runs each time a player spawns, including on login, respawn from death, and teleport
+        /// </summary>
+        /// <param name="clientInfo"></param>
+        /// <param name="respawnType"></param>
+        /// <param name="position"></param>
+        public static void PlayerSpawnedInWorld(ClientInfo clientInfo, RespawnType respawnType, Vector3i position)
+        {
+            var obj = clientInfo.ToPlayerSpawned(respawnType, position);
+
+            Task.Factory.StartNew((state) => _hub.OnPlayerSpawnedInWorld((PlayerSpawned)state), obj);
+        }
         /// <summary>
         /// Runs just before a player is spawned int the world
         /// </summary>
@@ -219,29 +226,17 @@ namespace LSTY.Sdtd.PatronsMod
         }
 
         /// <summary>
-        /// Runs each time a chunk has it's colors re-calculated. For example this is used to generate the images for allocs game map mod
+        /// <para>runs each time a player file is saved from the client to the server</para>
+        /// <para>this will usually run about every 30 seconds per player as well as triggered updates such as dying</para>
         /// </summary>
-        /// <param name="_chunk"></param>
-        public static void CalcChunkColorsDone(Chunk _chunk)
+        /// <param name="clientInfo"></param>
+        /// <param name="pdf"></param>
+        public static void SavePlayerData(ClientInfo clientInfo, PlayerDataFile pdf)
         {
+            Task.Factory.StartNew((state) =>
+            {
+                _hub.OnSavePlayerData(((ClientInfo)state).ToPlayerBase());
+            }, clientInfo);
         }
-
-        /// <summary>
-        /// <para>Runs any time the game executes an update (which is very often).</para>
-        /// <para>Place any tasks that you want to process in the main thread here with an execution rate limiter (such as creating entities via the entity factory)</para>
-        /// </summary>
-        public static void GameUpdate()
-        {
-        }
-
-        /// <summary>
-        /// Runs on initial connection from a player, _cInfo is usually null at this point
-        /// </summary>
-        /// <param name="_cInfo"></param>
-        /// <param name="_compatibilityVersion"></param>
-        public static void PlayerLogin(ClientInfo _cInfo, string _compatibilityVersion)
-        {
-        }
-
     }
 }

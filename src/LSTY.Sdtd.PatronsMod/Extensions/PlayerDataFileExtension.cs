@@ -1,17 +1,11 @@
-﻿using LSTY.Sdtd.PatronsMod;
-using LSTY.Sdtd.Shared.Models;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 
 namespace LSTY.Sdtd.PatronsMod.Extensions
 {
     internal static class PlayerDataFileExtension
     {
         #region Get Inventory
+
         public static Shared.Models.Inventory GetInventory(this PlayerDataFile pdf)
         {
             try
@@ -91,7 +85,7 @@ namespace LSTY.Sdtd.PatronsMod.Extensions
 
                 var itemClass = ItemClass.list[itemValue.type];
 
-                if(itemClass == null)
+                if (itemClass == null)
                 {
                     return null;
                 }
@@ -139,6 +133,7 @@ namespace LSTY.Sdtd.PatronsMod.Extensions
                 return null;
             }
         }
-        #endregion
+
+        #endregion Get Inventory
     }
 }

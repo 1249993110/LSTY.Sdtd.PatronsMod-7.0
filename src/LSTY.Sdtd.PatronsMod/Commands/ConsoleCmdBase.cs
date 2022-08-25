@@ -1,15 +1,8 @@
-﻿using LSTY.Sdtd.PatronsMod;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LSTY.Sdtd.PatronsMod.Commands
+﻿namespace LSTY.Sdtd.PatronsMod.Commands
 {
     public abstract class ConsoleCmdBase : ConsoleCmdAbstract
     {
-		protected virtual void Log(string line)
+        protected virtual void Log(string line)
         {
             SdtdConsole.Instance.Output(CustomLogger.Prefix + line);
         }

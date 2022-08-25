@@ -1,12 +1,4 @@
-﻿using LSTY.Sdtd.PatronsMod;
-using LSTY.Sdtd.Shared.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LSTY.Sdtd.PatronsMod.Extensions
+﻿namespace LSTY.Sdtd.PatronsMod.Extensions
 {
     internal static class EntityPlayerExtension
     {

@@ -1,5 +1,4 @@
-﻿using LSTY.Sdtd.Shared.Models;
-using Platform.Local;
+﻿using Platform.Local;
 
 namespace LSTY.Sdtd.PatronsMod.Extensions
 {

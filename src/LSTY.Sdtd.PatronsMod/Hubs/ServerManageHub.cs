@@ -1,6 +1,4 @@
 ﻿using LSTY.Sdtd.PatronsMod.Extensions;
-using LSTY.Sdtd.Shared.Hubs;
-using LSTY.Sdtd.Shared.Models;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 using Newtonsoft.Json;
@@ -84,7 +82,7 @@ namespace LSTY.Sdtd.PatronsMod
 
         public async Task<IEnumerable<EntityLocation>> GetAnimalsLocation()
         {
-            if(ModApi.IsGameStartDone == false)
+            if (ModApi.IsGameStartDone == false)
             {
                 return null;
             }
@@ -214,14 +212,16 @@ namespace LSTY.Sdtd.PatronsMod
                     case ItemBlockKind.All:
                         itemBlocks = ItemsHelper.GetAllItemsAndBlocks(param.Language, param.Keyword, param.ShowUserHidden);
                         break;
+
                     case ItemBlockKind.Item:
                         itemBlocks = ItemsHelper.GetAllItems(param.Language, param.Keyword, param.ShowUserHidden);
                         break;
+
                     case ItemBlockKind.Block:
                         itemBlocks = ItemsHelper.GetAllBlocks(param.Language, param.Keyword, param.ShowUserHidden);
                         break;
                 }
-                
+
                 var items = pageSzie == -1 ? itemBlocks : itemBlocks.Skip((param.PageIndex - 1) * pageSzie).Take(pageSzie);
 
                 var result = new ItemBlockPaged()
@@ -270,7 +270,7 @@ namespace LSTY.Sdtd.PatronsMod
                 var _playerId = (string)state;
                 var claims = new List<Position>();
                 var persistentPlayerList = GameManager.Instance.GetPersistentPlayerList();
-                 var claimOwner = new ClaimOwner()
+                var claimOwner = new ClaimOwner()
                 {
                     ClaimPositions = claims
                 };
@@ -336,7 +336,7 @@ namespace LSTY.Sdtd.PatronsMod
                         });
                     }
                 }
-                _Return:
+            _Return:
                 return new LandClaims()
                 {
                     ClaimOwners = claimOwners.Values,
@@ -411,118 +411,6 @@ namespace LSTY.Sdtd.PatronsMod
                 string fileName = AllocsCaller.MapDirectory + (string)state;
                 return AllocsCaller.GetMapTileDelegate.Invoke(fileName);
             }, zoomLevel);
-        }
-
-        public async Task<OnlinePlayer> GetPlayer(int entityId)
-        {
-            if (ModApi.IsGameStartDone == false)
-            {
-                return null;
-            }
-
-            return await Task.Factory.StartNew((state) =>
-            {
-                if (GameManager.Instance.World.Players.dict.TryGetValue((int)state, out var player))
-                {
-                    return player.ToOnlinePlayer();
-                }
-
-                return null;
-            }, entityId);
-        }
-
-        public async Task<int> GetPlayerCount()
-        {
-            if (ModApi.IsGameStartDone == false)
-            {
-                return 0;
-            }
-
-            return await Task.FromResult(GameManager.Instance.World.Players.Count);
-        }
-
-        public async Task<Shared.Models.Inventory> GetPlayerInventory(int entityId)
-        {
-            return await Task.Factory.StartNew((state) =>
-            {
-                return ConnectionManager.Instance.Clients.ForEntityId((int)state)?.latestPlayerData.GetInventory();
-            }, entityId);
-        }
-
-        public async Task<IEnumerable<OnlinePlayer>> GetPlayers()
-        {
-            if (ModApi.IsGameStartDone == false)
-            {
-                return null;
-            }
-
-            return await Task.Run(() =>
-            {
-                var result = new List<OnlinePlayer>();
-                foreach (var player in GameManager.Instance.World.Players.dict.Values)
-                {
-                    var onlinePlayer = player.ToOnlinePlayer();
-                    if (onlinePlayer != null)
-                    {
-                        result.Add(onlinePlayer);
-                    }
-                }
-
-                return result;
-            });
-        }
-
-        public async Task<IEnumerable<PlayerInventory>> GetPlayersInventory()
-        {
-            if (ModApi.IsGameStartDone == false)
-            {
-                return null;
-            }
-
-            return await Task.Run(() =>
-            {
-                var result = new List<PlayerInventory>();
-                foreach (var player in GameManager.Instance.World.Players.dict.Values)
-                {
-                    var inventory = ConnectionManager.Instance.Clients.ForEntityId(player.entityId)?.latestPlayerData.GetInventory();
-
-                    if (inventory != null)
-                    {
-                        result.Add(new PlayerInventory()
-                        {
-                            EntityId = player.entityId,
-                            Inventory = inventory
-                        });
-                    }
-                }
-
-                return result;
-            });
-        }
-
-        public async Task<IEnumerable<EntityLocation>> GetPlayersLocation()
-        {
-            if (ModApi.IsGameStartDone == false)
-            {
-                return null;
-            }
-
-            return await Task.Run(() =>
-            {
-                var entityLocations = new List<EntityLocation>();
-                foreach (var players in GameManager.Instance.World.Players.dict.Values)
-                {
-                    entityLocations.Add(new EntityLocation()
-                    {
-                        EntityId = players.entityId,
-                        EntityName = players.EntityName,
-                        Position = players.GetPosition().ToPosition(),
-                        IsPlayer = true
-                    });
-                }
-
-                return entityLocations;
-            });
         }
 
         public async Task<IEnumerable<string>> GiveItem(GiveItem giveItemEntry)
@@ -787,45 +675,6 @@ namespace LSTY.Sdtd.PatronsMod
         {
             return await ExecuteConsoleCommandBatch(playerId, obj => $"ban remove {obj}");
         }
-
-        public async Task<PlayerBase> GetPlayerByIdOrName(string idOrName)
-        {
-            return await Task.Factory.StartNew((state) => ConsoleHelper.ParseParamIdOrName((string)state)?.ToPlayerBase(), idOrName);
-        }
-
-        public async Task<bool> IsFriend(int entityId, int anotherEntityId)
-        {
-            return await Task.Run(() =>
-            {
-                var players = GameManager.Instance.World.Players.dict;
-                if (players.TryGetValue(entityId, out var entityPlayer) == false)
-                {
-                    return false;
-                }
-
-                if (players.TryGetValue(anotherEntityId, out var anotherEntityPlayer) == false)
-                {
-                    return false;
-                }
-
-                return entityPlayer.IsFriendsWith(anotherEntityPlayer);
-            });
-        }
-
-        public async Task<Position> GetPlayerPosition(int entityId)
-        {
-            return await Task.Run(() =>
-            {
-                var players = GameManager.Instance.World.Players.dict;
-                if (players.TryGetValue(entityId, out var entityPlayer) == false)
-                {
-                    return null;
-                }
-
-                return entityPlayer.position.ToPosition();
-            });
-        }
-
 
         #endregion Blacklist
     }

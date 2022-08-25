@@ -16,7 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Lib.Harmony" Version="2.2.1" />
+		<PackageReference Include="Lib.Harmony" Version="2.2.2" />
 		<PackageReference Include="Microsoft.AspNet.SignalR.SelfHost" Version="2.4.3" />
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
 	</ItemGroup>

@@ -1,12 +1,5 @@
-﻿using LSTY.Sdtd.Shared;
-using LSTY.Sdtd.Shared.Hubs;
-using Microsoft.AspNet.SignalR;
+﻿using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using LSTY.Sdtd.PatronsMod;
-using System.Threading.Tasks;
 
 namespace LSTY.Sdtd.PatronsMod
 {
@@ -16,6 +9,5 @@ namespace LSTY.Sdtd.PatronsMod
     [HubName(nameof(IModEventHub))]
     public class ModEventHub : Hub<IModEventHub>
     {
-        
     }
 }

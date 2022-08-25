@@ -1,9 +1,4 @@
 ﻿using LSTY.Sdtd.PatronsMod.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LSTY.Sdtd.PatronsMod
 {
@@ -12,23 +7,24 @@ namespace LSTY.Sdtd.PatronsMod
     /// </summary>
     internal static class ItemsHelper
     {
-        public static List<Shared.Models.ItemBlock> GetAllItemsAndBlocks(string language, string keyword, bool showUserHidden)
-        {
-            return GetItemsAndBlocks(0, ItemClass.list.Length, null, language, keyword, showUserHidden);
-        }
-        public static List<Shared.Models.ItemBlock> GetAllItems(string language, string keyword, bool showUserHidden)
-        {
-            return GetItemsAndBlocks(Block.ItemsStartHere, ItemClass.list.Length, item => item.IsBlock() == false, language, keyword, showUserHidden);
-        }
         public static List<Shared.Models.ItemBlock> GetAllBlocks(string language, string keyword, bool showUserHidden)
         {
             return GetItemsAndBlocks(0, Block.ItemsStartHere, item => item.IsBlock() == true, language, keyword, showUserHidden);
         }
 
+        public static List<Shared.Models.ItemBlock> GetAllItems(string language, string keyword, bool showUserHidden)
+        {
+            return GetItemsAndBlocks(Block.ItemsStartHere, ItemClass.list.Length, item => item.IsBlock() == false, language, keyword, showUserHidden);
+        }
+
+        public static List<Shared.Models.ItemBlock> GetAllItemsAndBlocks(string language, string keyword, bool showUserHidden)
+        {
+            return GetItemsAndBlocks(0, ItemClass.list.Length, null, language, keyword, showUserHidden);
+        }
         public static List<Shared.Models.ItemBlock> GetItemsAndBlocks(
-            int startId, 
-            int endId, 
-            Func<ItemClass, bool> filter, 
+            int startId,
+            int endId,
+            Func<ItemClass, bool> filter,
             string language,
             string keyword,
             bool showUserHidden)
@@ -70,9 +66,9 @@ namespace LSTY.Sdtd.PatronsMod
                             localizationName = dict[itemName][languageIndex];
                         }
 
-                        if(string.IsNullOrEmpty(keyword) == false)
+                        if (string.IsNullOrEmpty(keyword) == false)
                         {
-                            if(itemName.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) == -1
+                            if (itemName.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) == -1
                                 && localizationName.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) == -1)
                             {
                                 continue;
@@ -97,7 +93,5 @@ namespace LSTY.Sdtd.PatronsMod
 
             return result;
         }
-
-
     }
 }

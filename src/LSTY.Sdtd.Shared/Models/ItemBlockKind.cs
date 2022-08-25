@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LSTY.Sdtd.Shared.Models
+﻿namespace LSTY.Sdtd.Shared.Models
 {
     /// <summary>
     /// 物品方块种类
     /// </summary>
-    public enum ItemBlockKind
+    public enum ItemBlockKind : int
     {
         /// <summary>
         /// 全部

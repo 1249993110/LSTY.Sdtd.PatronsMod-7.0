@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LSTY.Sdtd.PatronsMod
+﻿namespace LSTY.Sdtd.PatronsMod
 {
     internal static class CustomLogger
     {
