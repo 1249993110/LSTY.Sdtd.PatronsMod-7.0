@@ -5,14 +5,24 @@ namespace LSTY.Sdtd.PatronsMod
 {
     internal static class AppSettings
     {
-        public static string AccessToken { get; } = GetSetting(nameof(AccessToken));
+        public static string AccessToken { get; }
 
-        public static string SignalRUrl { get; } = GetSetting(nameof(SignalRUrl));
+        public static string SignalRUrl { get; }
 
-        private static string GetSetting(string key)
+        static AppSettings()
         {
             var config = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location).AppSettings.Settings;
-            return config[key]?.Value;
+
+            var properties = typeof(AppSettings).GetProperties(BindingFlags.Public | BindingFlags.Static);
+
+            foreach (var item in properties)
+            {
+                var element = config[item.Name];
+                if(element != null)
+                {
+                    item.SetValue(null, element.Value);
+                }
+            }
         }
     }
 }
